@@ -1,7 +1,8 @@
 const ROUTE_NOT_FOUND = "Route Not Found";
 const CACHE_KEY_USERS = "CACHE_USERS";
-
+const CACHE_KEY_CONFIG = "CACHE_CONFIG";
 module.exports = {
   ROUTE_NOT_FOUND,
   CACHE_KEY_USERS,
+  CACHE_KEY_CONFIG,
 };

@@ -20,11 +20,14 @@ hstpAPI.use(libExpress.json());
 hstpAPI.use(libExpress.urlencoded({ extended: true }));
 
 // api end points and routers
-// const routers = {
-//   "/users": {
-//     router: require("./routes/users"),
-//   },
-// };
+const routers = {
+  // "/users": {
+  //   router: require("./routes/users"),
+  // },
+  "/config": {
+    router: require("./routes/config"),
+  },
+};
 
 // apply all routes
 Object.entries(routers).forEach(([path, routeHandler]) =>
