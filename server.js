@@ -1,0 +1,52 @@
+import { Elysia } from "elysia";
+import { cors } from "@elysiajs/cors";
+import { swagger } from "@elysiajs/swagger";
+
+const { logger, middlewares } = require("@hammerbyte/utils");
+
+export function createApp() {
+    const allowedOrigins = (process.env.ALLOWED_CORS_ORIGINS || "")
+        .split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean);
+
+    return new Elysia()
+        .use(
+            cors({
+                origin: (context) => {
+                    const origin = context.headers.origin;
+                    if (!origin) return true;
+                    return allowedOrigins.includes(origin);
+                },
+                credentials: true,
+                methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+                allowedHeaders: ["Content-Type", "authentication-token"],
+            }),
+        )
+        .use(
+            swagger({
+                documentation: {
+                    info: {
+                        title: "HSTP API Documentation",
+                        version: "1.0.0",
+                    },
+                },
+            }),
+        );
+}
+
+export async function allowTraffic(app) {
+    app.onRequest(middlewares.bun.requestLogger);
+
+    // Start server
+    app.listen({
+        port: process.env.PORT || 3000,
+        hostname: process.env.HOST || "0.0.0.0",
+    });
+
+    app.decorate("bunServer", app.server);
+
+    const { server } = app;
+
+    logger.success(`server listening on http://${server.hostname}:${server.port}`);
+}
