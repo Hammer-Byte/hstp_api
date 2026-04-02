@@ -2,6 +2,8 @@ import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 
+import { categories } from "./routes/categories.js";
+
 const { logger, middlewares } = require("@hammerbyte/utils");
 
 export function createApp() {
@@ -37,6 +39,9 @@ export function createApp() {
 
 export async function allowTraffic(app) {
     app.onRequest(middlewares.bun.requestLogger);
+
+    // Routes
+    app.group("/categories", categories);
 
     // Start server
     app.listen({

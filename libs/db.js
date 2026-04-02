@@ -24,17 +24,16 @@ export async function executeSQLQuery(queryFunction) {
 export async function generateDBTables() {
     const db = getMySQLDataBaseConnection();
 
-    // await db`
-    //     CREATE TABLE IF NOT EXISTS USERS (
-    //         id INT AUTO_INCREMENT PRIMARY KEY,
-    //         full_name VARCHAR(36),
-    //         phone VARCHAR(13) NOT NULL UNIQUE,
-    //         email VARCHAR(50) UNIQUE,
-    //         active BOOLEAN NOT NULL DEFAULT TRUE,
-    //         created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
-    //         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    //             ON UPDATE CURRENT_TIMESTAMP
-    //     )
-    // `;
-
+    await db`
+        CREATE TABLE IF NOT EXISTS CATEGORIES (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            description VARCHAR(255),
+            image VARCHAR(255),
+            view_index INT NOT NULL DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                ON UPDATE CURRENT_TIMESTAMP
+        )
+    `;
 }
