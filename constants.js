@@ -2,6 +2,8 @@ export const ERRORS = {
 
     INVALID_CATEGORY_ID: "Invalid category ID",
     INVALID_COURSE_ID: "Invalid course ID",
+    INVALID_TOPIC_ID: "Invalid topic ID",
+    INVALID_SUB_TOPIC_ID: "Invalid sub-topic ID",
     INVALID_TITLE: "Invalid title",
     INVALID_DESCRIPTION: "Invalid description",
     INVALID_IMAGE: "Invalid image",
@@ -21,9 +23,23 @@ export const ERRORS = {
     UNABLE_TO_DELETE_COURSE: "Unable to delete course",
     COURSE_NOT_FOUND: "Course not found",
     CATEGORY_NOT_FOUND: "Category not found",
+    UNABLE_TO_FETCH_TOPICS: "Unable to fetch topics",
+    UNABLE_TO_FETCH_TOPIC: "Unable to fetch topic",
+    UNABLE_TO_CREATE_TOPIC: "Unable to create topic",
+    UNABLE_TO_UPDATE_TOPIC: "Unable to update topic",
+    UNABLE_TO_DELETE_TOPIC: "Unable to delete topic",
+    TOPIC_NOT_FOUND: "Topic not found",
+    UNABLE_TO_FETCH_SUB_TOPICS: "Unable to fetch sub-topics",
+    UNABLE_TO_FETCH_SUB_TOPIC: "Unable to fetch sub-topic",
+    UNABLE_TO_CREATE_SUB_TOPIC: "Unable to create sub-topic",
+    UNABLE_TO_UPDATE_SUB_TOPIC: "Unable to update sub-topic",
+    UNABLE_TO_DELETE_SUB_TOPIC: "Unable to delete sub-topic",
+    SUB_TOPIC_NOT_FOUND: "Sub-topic not found",
 }
 
 export const SWAGGER = {
     CATEGORIES: "Categories",
     COURSES: "Courses",
+    TOPICS: "Topics",
+    SUB_TOPICS: "Sub-Topics",
 }

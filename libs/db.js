@@ -63,4 +63,43 @@ export async function generateDBTables() {
             UNIQUE KEY unique_category_course (category_id, course_id)
         )
     `;
+
+    await db`
+        CREATE TABLE IF NOT EXISTS TOPICS (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            duration INT NOT NULL DEFAULT 0,
+            active BOOLEAN DEFAULT TRUE,
+            view_index INT NOT NULL DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                ON UPDATE CURRENT_TIMESTAMP
+        )
+    `;
+
+    await db`
+        CREATE TABLE IF NOT EXISTS COURSE_TOPICS (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            course_id INT NOT NULL,
+            topic_id INT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (course_id) REFERENCES COURSES(id) ON DELETE CASCADE,
+            FOREIGN KEY (topic_id) REFERENCES TOPICS(id) ON DELETE CASCADE,
+            UNIQUE KEY unique_course_topic (course_id, topic_id)
+        )
+    `;
+
+    await db`
+        CREATE TABLE IF NOT EXISTS TOPIC_SUB_TOPICS (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            topic_id INT NOT NULL,
+            title VARCHAR(255) NOT NULL,
+            duration INT NOT NULL DEFAULT 0,
+            active BOOLEAN DEFAULT TRUE,
+            view_index INT NOT NULL DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (topic_id) REFERENCES TOPICS(id) ON DELETE CASCADE
+        )
+    `;
 }
