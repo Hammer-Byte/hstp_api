@@ -7,6 +7,7 @@ import {
     getCategory,
     updateCategory,
 } from "../services/categories.js";
+import { getCoursesByCategory } from "../services/courses.js";
 
 export function categories(app) {
     return app
@@ -61,6 +62,16 @@ export function categories(app) {
                 tags: [SWAGGER.CATEGORIES],
                 summary: "Delete category",
                 description: "Deletes a category by its ID.",
+            },
+            params: t.Object({
+                id: t.Numeric({ error: ERRORS.INVALID_CATEGORY_ID }),
+            }),
+        })
+        .get("/:id/courses", getCoursesByCategory, {
+            detail: {
+                tags: [SWAGGER.CATEGORIES],
+                summary: "Get courses by category",
+                description: "Retrieves all courses belonging to a specific category.",
             },
             params: t.Object({
                 id: t.Numeric({ error: ERRORS.INVALID_CATEGORY_ID }),
