@@ -45,6 +45,7 @@ export async function generateDBTables() {
             price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
             active BOOLEAN DEFAULT TRUE,
             description TEXT,
+            duration INT NOT NULL DEFAULT 0,
             view_index INT NOT NULL DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP

@@ -18,7 +18,7 @@ export async function getCourseById(id) {
 
 export async function addCourse(course) {
     return await executeSQLQuery((sql) =>
-        sql`INSERT INTO COURSES ${sql(course, "title", "description", "image", "price", "active", "view_index")}`,
+        sql`INSERT INTO COURSES ${sql(course, "title", "description", "duration", "image", "price", "active", "view_index")}`,
     )
         .then((result) => result.lastInsertRowid)
         .catch((error) => logger.error(`addCourse: ${error}`));
@@ -26,7 +26,7 @@ export async function addCourse(course) {
 
 export async function updateCourseById(id, course) {
     return await executeSQLQuery((sql) =>
-        sql`UPDATE COURSES SET ${sql(course, "title", "description", "image", "price", "active", "view_index")} WHERE id = ${id}`,
+        sql`UPDATE COURSES SET ${sql(course, "title", "description", "duration", "image", "price", "active", "view_index")} WHERE id = ${id}`,
     )
         .then((result) => result.affectedRows)
         .catch((error) => logger.error(`updateCourseById: ${error}`));
