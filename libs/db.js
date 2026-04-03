@@ -102,4 +102,28 @@ export async function generateDBTables() {
             FOREIGN KEY (topic_id) REFERENCES TOPICS(id) ON DELETE CASCADE
         )
     `;
+
+    await db`
+        CREATE TABLE IF NOT EXISTS USERS (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            full_name VARCHAR(255),
+            phone VARCHAR(255),
+            email VARCHAR(255),
+            active BOOLEAN DEFAULT TRUE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            UNIQUE KEY unique_users_email (email)
+        )
+    `;
+
+    await db`
+        CREATE TABLE IF NOT EXISTS USER_PROFILE (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            company VARCHAR(255),
+            address VARCHAR(512),
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE
+        )
+    `;
 }

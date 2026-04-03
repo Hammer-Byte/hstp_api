@@ -6,6 +6,7 @@ import { categories } from "./routes/categories.js";
 import { courses } from "./routes/courses.js";
 import { topics } from "./routes/topics.js";
 import { sub_topics } from "./routes/sub_topics.js";
+import { users } from "./routes/users.js";
 
 const { logger, middlewares } = require("@hammerbyte/utils");
 
@@ -48,6 +49,7 @@ export async function allowTraffic(app) {
     app.group("/courses", courses);
     app.group("/topics", topics);
     app.group("/sub-topics", sub_topics);
+    app.group("/users", users);
 
     // Start server
     app.listen({

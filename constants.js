@@ -35,6 +35,20 @@ export const ERRORS = {
     UNABLE_TO_UPDATE_SUB_TOPIC: "Unable to update sub-topic",
     UNABLE_TO_DELETE_SUB_TOPIC: "Unable to delete sub-topic",
     SUB_TOPIC_NOT_FOUND: "Sub-topic not found",
+    INVALID_USER_ID: "Invalid user ID",
+    INVALID_EMAIL: "Invalid email",
+    INVALID_FULL_NAME: "Invalid full name",
+    INVALID_PHONE: "Invalid phone",
+    INVALID_COMPANY: "Invalid company",
+    INVALID_ADDRESS: "Invalid address",
+    UNABLE_TO_ADD_USER_BY_EMAIL: "Unable to add or resolve user by email",
+    USER_NOT_FOUND: "User not found",
+    USER_EMAIL_ALREADY_EXISTS: "A user with this email already exists",
+    UNABLE_TO_FETCH_USERS: "Unable to fetch users",
+    UNABLE_TO_FETCH_USER: "Unable to fetch user",
+    UNABLE_TO_CREATE_USER: "Unable to create user",
+    UNABLE_TO_UPDATE_USER: "Unable to update user",
+    UNABLE_TO_DELETE_USER: "Unable to delete user",
 }
 
 export const SWAGGER = {
@@ -42,4 +56,5 @@ export const SWAGGER = {
     COURSES: "Courses",
     TOPICS: "Topics",
     SUB_TOPICS: "Sub-Topics",
+    USERS: "Users",
 }
