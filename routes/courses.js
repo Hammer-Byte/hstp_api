@@ -7,6 +7,7 @@ import {
     getCourse,
     updateCourse,
 } from "../services/courses.js";
+import { getTopicsByCourse } from "../services/topics.js";
 
 export function courses(app) {
     return app
@@ -71,6 +72,14 @@ export function courses(app) {
             params: t.Object({
                 id: t.Numeric({ error: ERRORS.INVALID_COURSE_ID }),
             }),
+        })
+        .get("/:id/topics", getTopicsByCourse, {
+            detail: {
+                tags: [SWAGGER.TOPICS, SWAGGER.COURSES],
+                summary: "Get topics by course",
+                description: "Retrieves all topics belonging to a specific course.",
+            },
+            params: t.Object({ id: t.Numeric({ error: ERRORS.INVALID_COURSE_ID }) }),
         });
 }
 
