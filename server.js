@@ -3,6 +3,7 @@ import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 
 import { categories } from "./routes/categories.js";
+import { courses } from "./routes/courses.js";
 
 const { logger, middlewares } = require("@hammerbyte/utils");
 
@@ -42,6 +43,7 @@ export async function allowTraffic(app) {
 
     // Routes
     app.group("/categories", categories);
+    app.group("/courses", courses);
 
     // Start server
     app.listen({

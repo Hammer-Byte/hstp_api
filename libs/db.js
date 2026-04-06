@@ -36,4 +36,31 @@ export async function generateDBTables() {
                 ON UPDATE CURRENT_TIMESTAMP
         )
     `;
+
+    await db`
+        CREATE TABLE IF NOT EXISTS COURSES (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            image VARCHAR(255),
+            price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+            active BOOLEAN DEFAULT TRUE,
+            description TEXT,
+            duration INT NOT NULL DEFAULT 0,
+            view_index INT NOT NULL DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                ON UPDATE CURRENT_TIMESTAMP
+        )
+    `;
+
+    await db`
+        CREATE TABLE IF NOT EXISTS CATEGORY_COURSES (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            category_id INT NOT NULL,
+            course_id INT NOT NULL,
+            FOREIGN KEY (category_id) REFERENCES CATEGORIES(id) ON DELETE CASCADE,
+            FOREIGN KEY (course_id) REFERENCES COURSES(id) ON DELETE CASCADE,
+            UNIQUE KEY unique_category_course (category_id, course_id)
+        )
+    `;
 }
