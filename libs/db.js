@@ -1,28 +1,33 @@
 import { SQL } from "bun";
+const { logger } = require("@hammerbyte/utils");
 
-let mysqlConnection = null;
-
-export function getMySQLDataBaseConnection() {
-    if (!mysqlConnection) {
-        mysqlConnection = new SQL({
-            adapter: "mysql",
-            hostname: process.env.MYSQL_DB_HOST || "localhost",
-            port: Number(process.env.MYSQL_DB_PORT) || 3306,
-            database: process.env.MYSQL_DB_NAME || "hstp_dev",
-            username: process.env.MYSQL_DB_USERNAME || "root",
-            password: process.env.MYSQL_DB_PASSWORD || "1234",
-        });
-    }
-
-    return mysqlConnection;
-}
+export const dbConnection = new SQL({
+    adapter: Bun.env.MYSQL_DIALECT,
+    hostname: Bun.env.MYSQL_HOST,
+    port: Bun.env.MYSQL_PORT,
+    database: Bun.env.MYSQL_DB,
+    username: Bun.env.MYSQL_USERNAME,
+    password: Bun.env.MYSQL_PASSWORD,
+    tls: false,
+    max: 1,
+    onconnect: (client) => {
+        logger.success("Connected to MySQL DataBase");
+    },
+    onclose: (client, error) => {
+        if (error) {
+            logger.error(`MySQL connection error ${error}`);
+        } else {
+            logger.info("MySQL connection closed");
+        }
+    },
+});
 
 export async function executeSQLQuery(queryFunction) {
-    return await queryFunction(getMySQLDataBaseConnection());
+    return await queryFunction(dbConnection);
 }
 
 export async function generateDBTables() {
-    const db = getMySQLDataBaseConnection();
+    const db = dbConnection;
 
     await db`
         CREATE TABLE IF NOT EXISTS CATEGORIES (

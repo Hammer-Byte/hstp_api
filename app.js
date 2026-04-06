@@ -13,6 +13,8 @@ logger.init({
     logsDirectory: "logs", // This folder will be created automatically
 });
 
+logger.info(Bun.env);
+
 try {
     filer.prepareDirectories(REQUIRED_DIRS);
     await generateDBTables();
@@ -24,7 +26,3 @@ try {
     logger.error(err);
     process.exit(1);
 }
-
-process.on("uncaughtException", (error) => logger.error(error));
-
-process.on("unhandledRejection", (error, promise) => logger.error(error));
