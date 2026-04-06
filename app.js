@@ -13,8 +13,6 @@ logger.init({
     logsDirectory: "logs", // This folder will be created automatically
 });
 
-logger.info(Bun.env);
-
 try {
     filer.prepareDirectories(REQUIRED_DIRS);
     await generateDBTables();
