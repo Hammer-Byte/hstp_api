@@ -23,8 +23,16 @@ export async function getUserIdByEmail({ email }) {
 }
 
 export async function addUserByEmail({ email }) {
-    return await executeSQLQuery((sql) => sql`INSERT IGNORE INTO USERS (email) VALUES (${email})`)
-        .then((result) => result?.lastInsertRowid)
+    return await executeSQLQuery((sql) => sql`INSERT IGNORE INTO USERS (email, active) VALUES (${email}, 1)`)
+        .then(async (result) => {
+            let userId = result?.lastInsertRowid;
+            if (!userId) {
+                userId = await getUserIdByEmail({ email });
+                if (userId === undefined) return false;
+            }
+            await executeSQLQuery((sql) => sql`INSERT IGNORE INTO USER_PROFILE (user_id) VALUES (${userId})`);
+            return userId;
+        })
         .catch((error) => {
             logger.error(`addUserByEmail: ${error}`);
             return false;

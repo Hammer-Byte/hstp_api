@@ -3,7 +3,6 @@ import {
     addUserByEmail,
     deleteUserById,
     getUserById as fetchUserById,
-    getUserIdByEmail,
     getUsers,
     patchUserById,
 } from "../db/users.js";
@@ -40,13 +39,8 @@ export async function getUser({ params: { id }, set }) {
 
 export async function createUserByEmail({ body, set }) {
     try {
-        const insertedId = await addUserByEmail(body);
-        if (insertedId === false) {
-            set.status = 400;
-            return { error: ERRORS.UNABLE_TO_ADD_USER_BY_EMAIL };
-        }
-        const userId = insertedId || (await getUserIdByEmail(body));
-        if (userId === undefined) {
+        const userId = await addUserByEmail(body);
+        if (userId === false) {
             set.status = 400;
             return { error: ERRORS.UNABLE_TO_ADD_USER_BY_EMAIL };
         }
