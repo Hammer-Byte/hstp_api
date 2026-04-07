@@ -50,6 +50,17 @@ export const ERRORS = {
     UNABLE_TO_CREATE_USER: "Unable to create user",
     UNABLE_TO_UPDATE_USER: "Unable to update user",
     UNABLE_TO_DELETE_USER: "Unable to delete user",
+    UNABLE_TO_FETCH_TESTIMONIALS: "Unable to fetch testimonials",
+    UNABLE_TO_FETCH_TESTIMONIAL: "Unable to fetch testimonial",
+    UNABLE_TO_CREATE_TESTIMONIAL: "Unable to create testimonial",
+    UNABLE_TO_UPDATE_TESTIMONIAL: "Unable to update testimonial",
+    UNABLE_TO_DELETE_TESTIMONIAL: "Unable to delete testimonial",
+    TESTIMONIAL_NOT_FOUND: "Testimonial not found",
+    INVALID_TESTIMONIAL: "Invalid testimonial",
+    INVALID_RATINGS: "Invalid ratings",
+    INVALID_TESTIMONIAL_ID: "Invalid testimonial ID",
+    INVALID_TESTIMONIAL_COURSE_ID: "Invalid testimonial course ID",
+    INVALID_TESTIMONIAL_USER_ID: "Invalid testimonial user ID",
 }
 
 export const SWAGGER = {
@@ -58,4 +69,5 @@ export const SWAGGER = {
     TOPICS: "Topics",
     SUB_TOPICS: "Sub-Topics",
     USERS: "Users",
+    TESTIMONIALS: "Testimonials",
 }

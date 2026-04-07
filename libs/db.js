@@ -131,4 +131,18 @@ export async function generateDBTables() {
             FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE
         )
     `;
+
+    await db`
+        CREATE TABLE IF NOT EXISTS TESTIMONIALS (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            course_id INT NOT NULL,
+            testimonial VARCHAR(255),
+            ratings BOOLEAN DEFAULT FALSE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE,
+            FOREIGN KEY (course_id) REFERENCES COURSES(id) ON DELETE CASCADE
+        )
+    `;
 }
