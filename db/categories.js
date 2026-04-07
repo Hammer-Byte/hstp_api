@@ -36,3 +36,23 @@ export async function deleteCategoryById(id) {
     return await executeSQLQuery((sql) => sql`DELETE FROM CATEGORIES WHERE id = ${id}`)
         .catch((error) => logger.error(`deleteCategoryById: ${error}`));
 }
+
+export async function getAllCategoriesAndCourses() {
+    return await executeSQLQuery((sql) => sql`
+        SELECT 
+            cat.id AS category_id,
+            cat.title AS category_name,
+            c.*
+        FROM CATEGORIES cat
+        LEFT JOIN CATEGORY_COURSES cc ON cat.id = cc.category_id
+        LEFT JOIN COURSES c ON c.id = cc.course_id
+        ORDER BY cat.id, c.view_index ASC
+    `)
+        .then((result) => [...result])
+        .catch((error) => {
+            logger.error(`getAllCategoriesAndCourses: ${error}`);
+            return [];
+        });
+
+}
+

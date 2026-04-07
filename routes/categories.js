@@ -4,6 +4,7 @@ import {
     createCategory,
     deleteCategory,
     getAllCategories,
+    getCategoriesCourses,
     getCategory,
     updateCategory,
 } from "../services/categories.js";
@@ -76,6 +77,13 @@ export function categories(app) {
             params: t.Object({
                 id: t.Numeric({ error: ERRORS.INVALID_CATEGORY_ID }),
             }),
+        })
+        .get("/all-courses", getCategoriesCourses, {
+            detail: {
+                tags: [SWAGGER.CATEGORIES, SWAGGER.COURSES],
+                summary: "Get all categories and their courses",
+                description: "Retrieves a list of all categories and their courses in the system.",
+            },
         });
 }
 
