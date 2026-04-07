@@ -8,6 +8,7 @@ import {
     updateCourse,
 } from "../services/courses.js";
 import { getTopicsByCourse } from "../services/topics.js";
+import { getCourseTestimonials } from "../services/testimonials.js";
 
 export function courses(app) {
     return app
@@ -80,7 +81,17 @@ export function courses(app) {
                 description: "Retrieves all topics belonging to a specific course.",
             },
             params: t.Object({ id: t.Numeric({ error: ERRORS.INVALID_COURSE_ID }) }),
-        });
+        })
+        .get("/:id/testimonials", getCourseTestimonials, {
+            params: t.Object({
+                id: t.Numeric({ error: ERRORS.INVALID_COURSE_ID }),
+            }),
+            detail: {
+                tags: [SWAGGER.TESTIMONIALS, SWAGGER.COURSES],
+                summary: "Get testimonials by course",
+                description: "Retrieves all testimonials for a specific course.",
+            },
+        })
 }
 
 export default courses;
