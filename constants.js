@@ -13,6 +13,7 @@ export const ERRORS = {
     INVALID_VIEW_INDEX: "Invalid view index",
     UNABLE_TO_FETCH_CATEGORIES: "Unable to fetch categories",
     UNABLE_TO_FETCH_CATEGORY: "Unable to fetch category",
+    UNABLE_TO_FETCH_CATEGORIES_AND_COURSES: "Unable to find categories and their courses",
     UNABLE_TO_CREATE_CATEGORY: "Unable to create category",
     UNABLE_TO_UPDATE_CATEGORY: "Unable to update category",
     UNABLE_TO_DELETE_CATEGORY: "Unable to delete category",

@@ -4,6 +4,7 @@ import {
     deleteCategoryById,
     getCategories,
     getCategoryById,
+    getAllCategoriesAndCourses,
     updateCategoryById,
 } from "../db/categories.js";
 
@@ -79,5 +80,37 @@ export async function deleteCategory({ params: { id }, set }) {
         logger.error(`DELETE /categories/:id error: ${error}`);
         set.status = 400;
         return { error: ERRORS.UNABLE_TO_DELETE_CATEGORY };
+    }
+}
+
+export async function getCategoriesCourses({ set }) {
+    try {
+        const result = await getAllCategoriesAndCourses();
+
+        const grouped = {};
+
+        result.map(x => {
+
+            const { category_id, category_name, ...course } = x;
+
+            if (!grouped[category_id]) {
+                grouped[category_id] = {
+                    category_id,
+                    category_name,
+                    course_data: []
+                };
+            }
+
+            if (course.id) {
+                grouped[category_id].course_data.push(course);
+            }
+
+        })
+        set.status = 200;
+        return Object.values(grouped);
+    } catch (error) {
+        logger.error(`GET /categories/all-courses error: ${error}`);
+        set.status = 400;
+        return { error: ERRORS.UNABLE_TO_FETCH_CATEGORIES_AND_COURSES };
     }
 }
