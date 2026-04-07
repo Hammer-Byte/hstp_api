@@ -27,10 +27,8 @@ export async function executeSQLQuery(queryFunction) {
 }
 
 export async function generateDBTables() {
-    const db = dbConnection;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS CATEGORIES (
+    const requiredTables = [
+        `CREATE TABLE IF NOT EXISTS CATEGORIES (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             description VARCHAR(255),
@@ -39,11 +37,8 @@ export async function generateDBTables() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 ON UPDATE CURRENT_TIMESTAMP
-        )
-    `;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS COURSES (
+        )`,
+        `CREATE TABLE IF NOT EXISTS COURSES (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             image VARCHAR(255),
@@ -55,22 +50,16 @@ export async function generateDBTables() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 ON UPDATE CURRENT_TIMESTAMP
-        )
-    `;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS CATEGORY_COURSES (
+        )`,
+        `CREATE TABLE IF NOT EXISTS CATEGORY_COURSES (
             id INT AUTO_INCREMENT PRIMARY KEY,
             category_id INT NOT NULL,
             course_id INT NOT NULL,
             FOREIGN KEY (category_id) REFERENCES CATEGORIES(id) ON DELETE CASCADE,
             FOREIGN KEY (course_id) REFERENCES COURSES(id) ON DELETE CASCADE,
             UNIQUE KEY unique_category_course (category_id, course_id)
-        )
-    `;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS TOPICS (
+        )`,
+        `CREATE TABLE IF NOT EXISTS TOPICS (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             duration INT NOT NULL DEFAULT 0,
@@ -79,11 +68,8 @@ export async function generateDBTables() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
                 ON UPDATE CURRENT_TIMESTAMP
-        )
-    `;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS COURSE_TOPICS (
+        )`,
+        `CREATE TABLE IF NOT EXISTS COURSE_TOPICS (
             id INT AUTO_INCREMENT PRIMARY KEY,
             course_id INT NOT NULL,
             topic_id INT NOT NULL,
@@ -91,11 +77,8 @@ export async function generateDBTables() {
             FOREIGN KEY (course_id) REFERENCES COURSES(id) ON DELETE CASCADE,
             FOREIGN KEY (topic_id) REFERENCES TOPICS(id) ON DELETE CASCADE,
             UNIQUE KEY unique_course_topic (course_id, topic_id)
-        )
-    `;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS TOPIC_SUB_TOPICS (
+        )`,
+        `CREATE TABLE IF NOT EXISTS TOPIC_SUB_TOPICS (
             id INT AUTO_INCREMENT PRIMARY KEY,
             topic_id INT NOT NULL,
             title VARCHAR(255) NOT NULL,
@@ -105,11 +88,8 @@ export async function generateDBTables() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (topic_id) REFERENCES TOPICS(id) ON DELETE CASCADE
-        )
-    `;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS USERS (
+        )`,
+        `CREATE TABLE IF NOT EXISTS USERS (
             id INT AUTO_INCREMENT PRIMARY KEY,
             full_name VARCHAR(255),
             phone VARCHAR(255),
@@ -118,22 +98,16 @@ export async function generateDBTables() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             UNIQUE KEY unique_users_email (email)
-        )
-    `;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS USER_PROFILE (
+        )`,
+        `CREATE TABLE IF NOT EXISTS USER_PROFILE (
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT NOT NULL,
             company VARCHAR(255),
             address VARCHAR(512),
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE
-        )
-    `;
-
-    await db`
-        CREATE TABLE IF NOT EXISTS TESTIMONIALS (
+        )`,
+        `CREATE TABLE IF NOT EXISTS TESTIMONIALS (
             id INT AUTO_INCREMENT PRIMARY KEY,
             user_id INT NOT NULL,
             course_id INT NOT NULL,
@@ -143,6 +117,31 @@ export async function generateDBTables() {
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE,
             FOREIGN KEY (course_id) REFERENCES COURSES(id) ON DELETE CASCADE
-        )
-    `;
+        )`,
+        `CREATE TABLE IF NOT EXISTS ENROLLMENTS (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            course_id INT NOT NULL,
+            active BOOLEAN DEFAULT TRUE,
+            ratings BOOLEAN DEFAULT FALSE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE,
+            FOREIGN KEY (course_id) REFERENCES COURSES(id) ON DELETE CASCADE
+        )`,
+        `CREATE TABLE IF NOT EXISTS AUTHENTICATION_TOKENS (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            otp INT NOT NULL,
+            token VARCHAR(512) NOT NULL,
+            active BOOLEAN DEFAULT TRUE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE
+        )`,
+    ];
+
+    for (const table of requiredTables) {
+        await dbConnection.unsafe(table);
+    }
 }

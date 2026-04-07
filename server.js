@@ -8,6 +8,8 @@ import { topics } from "./routes/topics.js";
 import { sub_topics } from "./routes/sub_topics.js";
 import { users } from "./routes/users.js";
 import { testimonials } from "./routes/testimonials.js";
+import { enrollments } from "./routes/enrollments.js";
+import { authentication_tokens } from "./routes/authentication_tokens.js";
 
 const { logger, middlewares } = require("@hammerbyte/utils");
 
@@ -52,6 +54,8 @@ export async function allowTraffic(app) {
     app.group("/sub-topics", sub_topics);
     app.group("/users", users);
     app.group("/testimonials", testimonials);
+    app.group("/enrollments", enrollments);
+    app.group("/authentication-tokens", authentication_tokens);
 
     // Start server
     app.listen({

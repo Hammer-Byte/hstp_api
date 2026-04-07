@@ -61,6 +61,22 @@ export const ERRORS = {
     INVALID_TESTIMONIAL_ID: "Invalid testimonial ID",
     INVALID_TESTIMONIAL_COURSE_ID: "Invalid testimonial course ID",
     INVALID_TESTIMONIAL_USER_ID: "Invalid testimonial user ID",
+
+    INVALID_ENROLLMENT_ID: "Invalid enrollment ID",
+    UNABLE_TO_FETCH_ENROLLMENTS: "Unable to fetch enrollments",
+    UNABLE_TO_FETCH_ENROLLMENT: "Unable to fetch enrollment",
+    UNABLE_TO_CREATE_ENROLLMENT: "Unable to create enrollment",
+    UNABLE_TO_UPDATE_ENROLLMENT: "Unable to update enrollment",
+    UNABLE_TO_DELETE_ENROLLMENT: "Unable to delete enrollment",
+
+    INVALID_AUTHENTICATION_TOKEN_ID: "Invalid authentication token ID",
+    INVALID_OTP: "Invalid OTP",
+    INVALID_AUTH_TOKEN: "Invalid auth token",
+    UNABLE_TO_FETCH_AUTHENTICATION_TOKENS: "Unable to fetch authentication tokens",
+    UNABLE_TO_FETCH_AUTHENTICATION_TOKEN: "Unable to fetch authentication token",
+    UNABLE_TO_CREATE_AUTHENTICATION_TOKEN: "Unable to create authentication token",
+    UNABLE_TO_UPDATE_AUTHENTICATION_TOKEN: "Unable to update authentication token",
+    UNABLE_TO_DELETE_AUTHENTICATION_TOKEN: "Unable to delete authentication token",
 }
 
 export const SWAGGER = {
@@ -70,4 +86,6 @@ export const SWAGGER = {
     SUB_TOPICS: "Sub-Topics",
     USERS: "Users",
     TESTIMONIALS: "Testimonials",
+    ENROLLMENTS: "Enrollments",
+    AUTHENTICATION_TOKENS: "Authentication Tokens",
 }
