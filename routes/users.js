@@ -7,6 +7,7 @@ import {
     getUser,
     updateUserById,
 } from "../services/users.js";
+import { getUserTestimonials } from "../services/testimonials.js";
 
 export function users(app) {
     return app
@@ -65,6 +66,16 @@ export function users(app) {
             params: t.Object({
                 id: t.Numeric({ error: ERRORS.INVALID_USER_ID }),
             }),
+        })
+        .get("/:id/testimonials", getUserTestimonials, {
+            params: t.Object({
+                id: t.Numeric({ error: ERRORS.INVALID_USER_ID }),
+            }),
+            detail: {
+                tags: [SWAGGER.TESTIMONIALS, SWAGGER.USERS],
+                summary: "Get testimonials by user",
+                description: "Retrieves all testimonials for a specific user.",
+            },
         });
 }
 

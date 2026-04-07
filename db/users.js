@@ -23,25 +23,33 @@ export async function getUserIdByEmail({ email }) {
 }
 
 export async function addUserByEmail({ email }) {
-    return await executeSQLQuery((sql) => sql`INSERT IGNORE INTO USERS (email) VALUES (${email})`)
-        .then((result) => result?.lastInsertRowid)
-        .catch((error) => {
-            logger.error(`addUserByEmail: ${error}`);
-            return false;
-        });
+    try {
+        const result = await executeSQLQuery((sql) => sql`INSERT IGNORE INTO USERS (email, active) VALUES (${email}, 1)`);
+        let userId = result?.lastInsertRowid;
+        if (!userId) {
+            userId = await getUserIdByEmail({ email });
+            if (userId === undefined) return false;
+        }
+        await executeSQLQuery((sql) => sql`INSERT IGNORE INTO USER_PROFILE (user_id) VALUES (${userId})`);
+        return userId;
+    } catch (error) {
+        logger.error(`addUserByEmail: ${error}`);
+        return false;
+    }
 }
 
 async function updateUserById({ id, email, full_name, phone, active, company, address }) {
-    return await executeSQLQuery((sql) =>
-        sql`UPDATE USERS SET email=${email}, full_name=${full_name}, phone=${phone}, active=${active} WHERE id=${id}`,
-    )
-        .then(async () => {
-            await executeSQLQuery((sql) =>
-                sql`UPDATE USER_PROFILE SET company=${company}, address=${address} WHERE user_id=${id}`,
-            );
-            return true;
-        })
-        .catch((error) => logger.error(`updateUserById: ${error}`));
+    try {
+        await executeSQLQuery((sql) =>
+            sql`UPDATE USERS SET email=${email}, full_name=${full_name}, phone=${phone}, active=${active} WHERE id=${id}`,
+        );
+        await executeSQLQuery((sql) =>
+            sql`UPDATE USER_PROFILE SET company=${company}, address=${address} WHERE user_id=${id}`,
+        );
+        return true;
+    } catch (error) {
+        logger.error(`updateUserById: ${error}`);
+    }
 }
 
 export async function patchUserById(id, body) {
