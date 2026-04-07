@@ -12,6 +12,13 @@ import { getCoursesByCategory } from "../services/courses.js";
 
 export function categories(app) {
     return app
+        .get("/popular-courses", getCategoriesCourses, {
+            detail: {
+                tags: [SWAGGER.CATEGORIES, SWAGGER.COURSES],
+                summary: "Get all categories and their courses",
+                description: "Retrieves a list of all categories and their courses in the system.",
+            },
+        })
         .get("/", getAllCategories, {
             detail: {
                 tags: [SWAGGER.CATEGORIES],
@@ -77,13 +84,6 @@ export function categories(app) {
             params: t.Object({
                 id: t.Numeric({ error: ERRORS.INVALID_CATEGORY_ID }),
             }),
-        })
-        .get("/all-courses", getCategoriesCourses, {
-            detail: {
-                tags: [SWAGGER.CATEGORIES, SWAGGER.COURSES],
-                summary: "Get all categories and their courses",
-                description: "Retrieves a list of all categories and their courses in the system.",
-            },
         });
 }
 
