@@ -4,7 +4,7 @@ import {
     deleteUserById,
     getUserById as fetchUserById,
     getUsers,
-    patchUserById,
+    updateUserAndProfileById,
 } from "../db/users.js";
 
 const { logger } = require("@hammerbyte/utils");
@@ -56,12 +56,12 @@ export async function createUserByEmail({ body, set }) {
 
 export async function updateUserById({ params: { id }, body, set }) {
     try {
-        const result = await patchUserById(id, body);
+        const result = await updateUserAndProfileById(id, body);
         if (result === null) {
             set.status = 404;
             return { error: ERRORS.USER_NOT_FOUND };
         }
-        if (result !== undefined) {
+        if (result === true) {
             set.status = 200;
             const user = await fetchUserById(id);
             return user;

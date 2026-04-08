@@ -2,7 +2,7 @@ import { executeSQLQuery } from "../libs/db.js";
 const { logger } = require("@hammerbyte/utils");
 
 export async function getUsers() {
-    return await executeSQLQuery((sql) => sql`SELECT USER_PROFILE.*, USERS.* FROM USERS LEFT JOIN USER_PROFILE ON USER_PROFILE.user_id = USERS.id ORDER BY USERS.id ASC`)
+    return await executeSQLQuery((sql) => sql`SELECT USERS.*, USER_PROFILE.company, USER_PROFILE.address, USER_PROFILE.image FROM USERS LEFT JOIN USER_PROFILE ON USERS.id = USER_PROFILE.user_id ORDER BY USERS.id ASC`)
         .then((result) => [...result])
         .catch((error) => {
             logger.error(`getUsers: ${error}`);
@@ -11,7 +11,7 @@ export async function getUsers() {
 }
 
 export async function getUserById(id) {
-    return await executeSQLQuery((sql) => sql`SELECT USERS.*, USER_PROFILE.company, USER_PROFILE.address, USER_PROFILE.image  FROM USERS JOIN USER_PROFILE ON USERS.id = USER_PROFILE.user_id WHERE USERS.id=${id}`)
+    return await executeSQLQuery((sql) => sql`SELECT USERS.*, USER_PROFILE.company, USER_PROFILE.address, USER_PROFILE.image FROM USERS JOIN USER_PROFILE ON USERS.id = USER_PROFILE.user_id WHERE USERS.id=${id}`)
         .then((result) => (result.length ? result[0] : null))
         .catch((error) => logger.error(`getUserById: ${error}`));
 }
@@ -38,33 +38,17 @@ export async function addUserByEmail({ email }) {
     }
 }
 
-async function updateUserById({ id, email, full_name, phone, active, company, address }) {
+export async function updateUserAndProfileById(id, body) {
+    const userId = Number(id);
+    const { email, full_name, phone, active, company, address, image } = body;
     try {
-        await executeSQLQuery((sql) =>
-            sql`UPDATE USERS SET email=${email}, full_name=${full_name}, phone=${phone}, active=${active} WHERE id=${id}`,
-        );
-        await executeSQLQuery((sql) =>
-            sql`UPDATE USER_PROFILE SET company=${company}, address=${address} WHERE user_id=${id}`,
-        );
+        const usersResult = await executeSQLQuery((sql) => sql`UPDATE USERS SET email=${email}, full_name=${full_name}, phone=${phone}, active=${active} WHERE USERS.id=${userId}`);
+        if (!usersResult?.affectedRows) return null;
+        await executeSQLQuery((sql) => sql`UPDATE USER_PROFILE SET company=${company}, address=${address}, image=${image} WHERE USER_PROFILE.user_id=${userId}`);
         return true;
     } catch (error) {
-        logger.error(`updateUserById: ${error}`);
+        logger.error(`updateUserAndProfileById: ${error}`);
     }
-}
-
-export async function patchUserById(id, body) {
-    const existing = await getUserById(id);
-    if (!existing) return null;
-    const { id: _ignore, email, ...patch } = body;
-    return await updateUserById({
-        id: Number(id),
-        email: email ?? existing.email,
-        full_name: "full_name" in patch ? patch.full_name : existing.full_name,
-        phone: "phone" in patch ? patch.phone : existing.phone,
-        active: "active" in patch ? patch.active : existing.active,
-        company: "company" in patch ? patch.company : existing.company ?? null,
-        address: "address" in patch ? patch.address : existing.address ?? null,
-    });
 }
 
 export async function deleteUserById(id) {
