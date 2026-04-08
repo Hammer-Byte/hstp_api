@@ -2,7 +2,13 @@ import { executeSQLQuery } from "../libs/db.js";
 const { logger } = require("@hammerbyte/utils");
 
 export async function getTestimonials() {
-    return await executeSQLQuery((sql) => sql`SELECT * FROM TESTIMONIALS ORDER BY created_at DESC`)
+    return await executeSQLQuery((sql) => sql`
+        SELECT t.*, u.full_name AS user_name, up.image AS image 
+        FROM TESTIMONIALS t 
+        JOIN USERS u ON t.user_id = u.id
+        LEFT JOIN USER_PROFILE up ON up.user_id = u.id
+        ORDER BY t.created_at DESC
+    `)
         .then((result) => [...result])
         .catch((error) => {
             logger.error(`getTestimonials: ${error}`);

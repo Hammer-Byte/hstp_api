@@ -2,7 +2,19 @@ import { executeSQLQuery } from "../libs/db.js";
 const { logger } = require("@hammerbyte/utils");
 
 export async function getCourses() {
-    return await executeSQLQuery((sql) => sql`SELECT * FROM COURSES ORDER BY view_index ASC`)
+    return await executeSQLQuery((sql) => sql`
+        SELECT 
+            c.*,
+            GROUP_CONCAT(DISTINCT cat.title ORDER BY cat.title SEPARATOR ', ') AS category_names,
+            CAST(ROUND(AVG(t.ratings), 1) AS CHAR) AS avg_rating,
+            COUNT(DISTINCT t.id) AS total_ratings
+        FROM COURSES c
+        LEFT JOIN CATEGORY_COURSES cc ON cc.course_id = c.id
+        LEFT JOIN CATEGORIES cat ON cat.id = cc.category_id
+        LEFT JOIN TESTIMONIALS t ON t.course_id = c.id
+        GROUP BY c.id
+        ORDER BY c.view_index ASC
+    `)
         .then((result) => [...result])
         .catch((error) => {
             logger.error(`getCourses: ${error}`);
@@ -18,7 +30,7 @@ export async function getCourseById(id) {
 
 export async function addCourse(course) {
     return await executeSQLQuery((sql) =>
-        sql`INSERT INTO COURSES ${sql(course, "title", "description", "duration", "image", "price", "active", "view_index")}`,
+        sql`INSERT INTO COURSES ${sql(course, "title", "description", "duration", "image", "price", "trending", "active", "view_index")}`,
     )
         .then((result) => result.lastInsertRowid)
         .catch((error) => logger.error(`addCourse: ${error}`));
@@ -26,7 +38,7 @@ export async function addCourse(course) {
 
 export async function updateCourseById(id, course) {
     return await executeSQLQuery((sql) =>
-        sql`UPDATE COURSES SET ${sql(course, "title", "description", "duration", "image", "price", "active", "view_index")} WHERE id = ${id}`,
+        sql`UPDATE COURSES SET ${sql(course, "title", "description", "duration", "image", "price", "trending", "active", "view_index")} WHERE id = ${id}`,
     )
         .then((result) => result.affectedRows)
         .catch((error) => logger.error(`updateCourseById: ${error}`));
@@ -39,7 +51,14 @@ export async function deleteCourseById(id) {
 
 export async function getCoursesByCategoryId(categoryId) {
     return await executeSQLQuery((sql) => sql`
-        SELECT c.* FROM COURSES c JOIN CATEGORY_COURSES cc ON c.id = cc.course_id
+        SELECT 
+            c.*,
+            cat.id AS category_id,
+            cat.title AS category_name,
+            cat.description AS category_description
+        FROM COURSES c
+        JOIN CATEGORY_COURSES cc ON c.id = cc.course_id
+        JOIN CATEGORIES cat ON cat.id = cc.category_id
         WHERE cc.category_id = ${categoryId}
         ORDER BY c.view_index ASC
     `)
