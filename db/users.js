@@ -11,7 +11,7 @@ export async function getUsers() {
 }
 
 export async function getUserById(id) {
-    return await executeSQLQuery((sql) => sql`SELECT USER_PROFILE.*, USERS.* FROM USERS LEFT JOIN USER_PROFILE ON USER_PROFILE.user_id = USERS.id WHERE USERS.id=${id}`)
+    return await executeSQLQuery((sql) => sql`SELECT USERS.*, USER_PROFILE.company, USER_PROFILE.address, USER_PROFILE.image  FROM USERS JOIN USER_PROFILE ON USERS.id = USER_PROFILE.user_id WHERE USERS.id=${id}`)
         .then((result) => (result.length ? result[0] : null))
         .catch((error) => logger.error(`getUserById: ${error}`));
 }
