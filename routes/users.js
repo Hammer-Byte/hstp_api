@@ -41,20 +41,20 @@ export function users(app) {
         .put("/:id", updateUserById, {
             detail: {
                 tags: [SWAGGER.USERS],
-                summary: "Update user",
+                summary: "Update user by ID",
                 description: "Updates an existing user and profile. ID is in the path and repeated in the body.",
             },
             params: t.Object({
                 id: t.Numeric({ error: ERRORS.INVALID_USER_ID }),
             }),
             body: t.Object({
-                id: t.Numeric({ error: ERRORS.INVALID_USER_ID }),
-                email: t.String({ error: ERRORS.INVALID_EMAIL }),
+                email: t.Optional(t.String({ error: ERRORS.INVALID_EMAIL })),
                 full_name: t.Optional(t.String({ error: ERRORS.INVALID_FULL_NAME })),
                 phone: t.Optional(t.String({ error: ERRORS.INVALID_PHONE })),
                 active: t.Optional(t.Boolean({ error: ERRORS.INVALID_ACTIVE })),
                 company: t.Optional(t.String({ error: ERRORS.INVALID_COMPANY })),
                 address: t.Optional(t.String({ error: ERRORS.INVALID_ADDRESS })),
+                image: t.Optional(t.String({ error: ERRORS.INVALID_IMAGE })),
             }),
         })
         .delete("/:id", deleteUser, {
