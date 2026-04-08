@@ -8,8 +8,8 @@ import {
     updateTestimonial,
 } from "../services/testimonials.js";
 
-export const testimonials = (app) =>
-    app
+export function testimonials(app) {
+    return app
         .get("/", getAllTestimonials, {
             detail: {
                 tags: [SWAGGER.TESTIMONIALS],
@@ -32,7 +32,7 @@ export const testimonials = (app) =>
                 user_id: t.Numeric({ error: ERRORS.INVALID_USER_ID }),
                 course_id: t.Numeric({ error: ERRORS.INVALID_COURSE_ID }),
                 testimonial: t.String({ error: ERRORS.INVALID_TESTIMONIAL }),
-                ratings: t.Boolean({ error: ERRORS.INVALID_RATINGS }),
+                ratings: t.Number({ error: ERRORS.INVALID_RATINGS }),
             }),
             detail: {
                 tags: [SWAGGER.TESTIMONIALS],
@@ -40,11 +40,11 @@ export const testimonials = (app) =>
                 description: "Creates a new testimonial.",
             },
         })
-        .patch("/", updateTestimonial, {
+        .put("/", updateTestimonial, {
             body: t.Object({
                 id: t.Numeric({ error: ERRORS.INVALID_TESTIMONIAL_ID }),
                 testimonial: t.Optional(t.String({ error: ERRORS.INVALID_TESTIMONIAL })),
-                ratings: t.Optional(t.Boolean({ error: ERRORS.INVALID_RATINGS })),
+                ratings: t.Optional(t.Number({ error: ERRORS.INVALID_RATINGS })),
             }),
             detail: {
                 tags: [SWAGGER.TESTIMONIALS],
@@ -62,3 +62,6 @@ export const testimonials = (app) =>
                 description: "Deletes a specific testimonial by its ID.",
             },
         });
+}
+
+export default testimonials;

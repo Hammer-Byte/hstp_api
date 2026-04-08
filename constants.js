@@ -10,6 +10,7 @@ export const ERRORS = {
     INVALID_PRICE: "Invalid price",
     INVALID_DURATION: "Invalid duration",
     INVALID_ACTIVE: "Invalid active status",
+    INVALID_TRENDING: "Invalid trending status",
     INVALID_VIEW_INDEX: "Invalid view index",
     UNABLE_TO_FETCH_CATEGORIES: "Unable to fetch categories",
     UNABLE_TO_FETCH_CATEGORY: "Unable to fetch category",

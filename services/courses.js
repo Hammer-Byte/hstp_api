@@ -100,8 +100,29 @@ export async function deleteCourse({ params: { id }, set }) {
 export async function getCoursesByCategory({ params: { id }, set }) {
     try {
         const courses = await getCoursesByCategoryId(id);
+
+        if (!courses.length) {
+            set.status = 200;
+            return {};
+        }
+
+        const {
+            category_id,
+            category_name,
+            category_description
+        } = courses[0];
+
+        const response = {
+            category_id,
+            category_name,
+            category_description,
+            number_of_courses: courses.length,
+            number_of_courses: 1, // TEMP
+            course_data: courses.map(({ category_id, category_name, category_description, ...course }) => course)
+        };
+
         set.status = 200;
-        return courses;
+        return response;
     } catch (error) {
         logger.error(`GET /categories/:id/courses error: ${error}`);
         set.status = 400;
