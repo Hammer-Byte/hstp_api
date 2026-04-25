@@ -1,13 +1,16 @@
 import { ERRORS } from "../constants.js";
 import {
+    activateAuthenticationToken,
     addAuthenticationToken,
     deleteAuthenticationTokenById,
     getAuthenticationTokenById,
     getAuthenticationTokens,
     getAuthenticationTokensByUserId,
     getOtpByUserId,
-    updateAuthenticationTokenById,
+    getUserByActiveAuthenticationToken,
 } from "../db/authentication_tokens.js";
+import { addUserByEmail } from "../db/users.js";
+import { generateOTP, generateToken } from "../utils.js";
 
 const { logger } = require("@hammerbyte/utils");
 
@@ -69,7 +72,25 @@ export async function getAuthenticationToken({ params: { id }, set }) {
 
 export async function createAuthenticationToken({ body, set }) {
     try {
-        const id = await addAuthenticationToken(body);
+        const { email } = body;
+
+        const user_id = await addUserByEmail({ email });
+        if (!user_id) {
+            set.status = 400;
+            return { error: ERRORS.UNABLE_TO_ADD_USER_BY_EMAIL };
+        }
+
+        const otp = generateOTP();
+        const token = generateToken();
+
+        const id = await addAuthenticationToken({
+            user_id,
+            otp,
+            token,
+            active: false,
+            validity: new Date(Date.now() + 24 * 60 * 60 * 1000)
+        });
+
         if (id) {
             set.status = 201;
             const row = await getAuthenticationTokenById(id);
@@ -86,15 +107,17 @@ export async function createAuthenticationToken({ body, set }) {
 
 export async function updateAuthenticationToken({ body, set }) {
     try {
-        const { id, ...data } = body;
-        const result = await updateAuthenticationTokenById(id, data);
-        if (result) {
-            set.status = 200;
-            const row = await getAuthenticationTokenById(id);
-            return row;
+        await activateAuthenticationToken(body);
+
+        const user = await getUserByActiveAuthenticationToken(body);
+
+        if (!user) {
+            set.status = 401;
+            return { error: ERRORS.INVALID_OTP };
         }
-        set.status = 400;
-        return { error: ERRORS.UNABLE_TO_UPDATE_AUTHENTICATION_TOKEN };
+
+        set.status = 200;
+        return user;
     } catch (error) {
         logger.error(`PATCH /authentication-tokens error: ${error}`);
         set.status = 400;
