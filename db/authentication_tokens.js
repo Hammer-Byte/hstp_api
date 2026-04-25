@@ -38,7 +38,7 @@ export async function getOtpByUserId(userId) {
 
 export async function addAuthenticationToken(row) {
     return await executeSQLQuery((sql) =>
-        sql`INSERT INTO AUTHENTICATION_TOKENS ${sql(row, "user_id", "otp", "token", "active")}`,
+        sql`INSERT INTO AUTHENTICATION_TOKENS ${sql(row, "user_id", "otp", "token", "active", "validity")}`,
     )
         .then((result) => result?.lastInsertRowid)
         .catch((error) => logger.error(`addAuthenticationToken: ${error}`));
@@ -46,7 +46,7 @@ export async function addAuthenticationToken(row) {
 
 export async function updateAuthenticationTokenById(id, row) {
     return await executeSQLQuery((sql) =>
-        sql`UPDATE AUTHENTICATION_TOKENS SET ${sql(row, "user_id", "otp", "token", "active")} WHERE id = ${id}`,
+        sql`UPDATE AUTHENTICATION_TOKENS SET ${sql(row, "user_id", "otp", "token", "active", "validity")} WHERE id = ${id}`,
     )
         .then((result) => result.affectedRows)
         .catch((error) => logger.error(`updateAuthenticationTokenById: ${error}`));
@@ -55,4 +55,19 @@ export async function updateAuthenticationTokenById(id, row) {
 export async function deleteAuthenticationTokenById(id) {
     return await executeSQLQuery((sql) => sql`DELETE FROM AUTHENTICATION_TOKENS WHERE id = ${id}`)
         .catch((error) => logger.error(`deleteAuthenticationTokenById: ${error}`));
+}
+
+export async function activateAuthenticationToken({ authentication_token, otp }) {
+    return await executeSQLQuery((sql) => sql`UPDATE AUTHENTICATION_TOKENS SET active = true WHERE token = ${authentication_token} AND otp=${otp}`).catch(
+        (error) => logger.error(`activateAuthenticationToken: ${error}`),
+    );
+}
+
+export async function getUserByActiveAuthenticationToken({ authentication_token }) {
+    return await executeSQLQuery(
+        (sql) =>
+            sql`SELECT USERS.* FROM  AUTHENTICATION_TOKENS LEFT JOIN USERS ON AUTHENTICATION_TOKENS.user_id=USERS.id WHERE AUTHENTICATION_TOKENS.token=${authentication_token} AND AUTHENTICATION_TOKENS.active=true  AND AUTHENTICATION_TOKENS.validity > CURRENT_TIMESTAMP`,
+    )
+        .then((result) => (result.length ? result[0] : false))
+        .catch((error) => logger.error(`getUserByActiveAuthenticationToken: ${error}`));
 }

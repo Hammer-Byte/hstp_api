@@ -51,24 +51,21 @@ export const authentication_tokens = (app) =>
         })
         .post("/", createAuthenticationToken, {
             body: t.Object({
-                user_id: t.Numeric({ error: ERRORS.INVALID_USER_ID }),
-                otp: t.Numeric({ error: ERRORS.INVALID_OTP }),
-                token: t.String({ error: ERRORS.INVALID_AUTH_TOKEN }),
-                active: t.Optional(t.Boolean({ error: ERRORS.INVALID_ACTIVE })),
+                email: t.String({
+                    format: "email",
+                    error: ERRORS.INVALID_EMAIL,
+                }),
             }),
             detail: {
                 tags: [SWAGGER.AUTHENTICATION_TOKENS],
                 summary: "Create authentication token",
-                description: "Creates a new authentication token row.",
+                description: "Creates a new authentication token row for the given email.",
             },
         })
         .patch("/", updateAuthenticationToken, {
             body: t.Object({
-                id: t.Numeric({ error: ERRORS.INVALID_AUTHENTICATION_TOKEN_ID }),
-                user_id: t.Optional(t.Numeric({ error: ERRORS.INVALID_USER_ID })),
-                otp: t.Optional(t.Numeric({ error: ERRORS.INVALID_OTP })),
-                token: t.Optional(t.String({ error: ERRORS.INVALID_AUTH_TOKEN })),
-                active: t.Optional(t.Boolean({ error: ERRORS.INVALID_ACTIVE })),
+                authentication_token: t.String({ pattern: "^.{32}$", error: ERRORS.INVALID_AUTH_TOKEN }),
+                otp: t.String({ pattern: "^[0-9]{4}$", error: ERRORS.INVALID_OTP }),
             }),
             detail: {
                 tags: [SWAGGER.AUTHENTICATION_TOKENS],

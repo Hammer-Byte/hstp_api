@@ -10,8 +10,11 @@ import { users } from "./routes/users.js";
 import { testimonials } from "./routes/testimonials.js";
 import { enrollments } from "./routes/enrollments.js";
 import { authentication_tokens } from "./routes/authentication_tokens.js";
+import parse_authentication_token from "./middleware/parse_authentication_token.js";
+import requiresAuthentication from "./middleware/requires_authentication";
 
 const { logger, middlewares } = require("@hammerbyte/utils");
+const baseUrl = process.env.BASE_URL || "http://localhost:3001";
 
 export function createApp() {
     const allowedOrigins = (process.env.ALLOWED_CORS_ORIGINS || "")
@@ -39,6 +42,11 @@ export function createApp() {
                         title: "HSTP API Documentation",
                         version: "1.0.0",
                     },
+                    servers: [
+                        {
+                            url: baseUrl
+                        }
+                    ]
                 },
             }),
         );
@@ -46,16 +54,27 @@ export function createApp() {
 
 export async function allowTraffic(app) {
     app.onRequest(middlewares.bun.requestLogger);
+    app.derive({ as: "global" }, parse_authentication_token);
+
+
+    app.group("/authentication-tokens", authentication_tokens);
+
 
     // Routes
-    app.group("/categories", categories);
-    app.group("/courses", courses);
-    app.group("/topics", topics);
-    app.group("/sub-topics", sub_topics);
-    app.group("/users", users);
-    app.group("/testimonials", testimonials);
-    app.group("/enrollments", enrollments);
-    app.group("/authentication-tokens", authentication_tokens);
+    app.guard(
+        {
+            beforeHandle: [requiresAuthentication],
+        },
+        (protectedApp) =>
+            protectedApp
+                .group("/categories", categories)
+                .group("/courses", courses)
+                .group("/topics", topics)
+                .group("/sub-topics", sub_topics)
+                .group("/users", users)
+                .group("/testimonials", testimonials)
+                .group("/enrollments", enrollments),
+    );
 
     // Start server
     app.listen({
@@ -65,7 +84,5 @@ export async function allowTraffic(app) {
 
     app.decorate("bunServer", app.server);
 
-    const { server } = app;
-
-    logger.success(`server listening on http://${server.hostname}:${server.port}`);
+    logger.success(`server listening on ${app.server.url}`);
 }

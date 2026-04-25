@@ -137,6 +137,7 @@ export async function generateDBTables() {
             otp INT NOT NULL,
             token VARCHAR(512) NOT NULL,
             active BOOLEAN DEFAULT TRUE,
+            validity DATETIME NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE
